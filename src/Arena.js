@@ -13,7 +13,7 @@ class Arena {
 
   isTouchable(attacker, defender) {
     const touch = this.getDistance(attacker, defender) <= attacker.getRange();
-    return this.getDistance(attacker, defender) <= attacker.getRange()
+    return touch;
   }
 
   move(direction) {
@@ -43,6 +43,42 @@ class Arena {
   }
 
   CheckNoMonster(x, y) {
-    return !this.monsters.some(monster => (monster.x === x && monster.y === y))
+    return !this.monsters.some(monster => (monster.x === x && monster.y === y && monster.isAlive()))
+  }
+
+  battle(index) {
+    if (!this.isTouchable(this.hero, this.monsters[index])) {
+      this.message = "This monster is not touchable, please move first";
+      document.getElementById('error').innerHTML = this.message;
+    } else {
+      console.log('this.hero.strength :>> ', this.hero.strength);
+      this.hero.fight(this.monsters[index]);
+      this.message = `${this.hero.name} 💙 ${this.hero.life} 🗡️ ${this.monsters[index].name} 💙 ${this.monsters[index].life}`;
+      document.getElementById('error').innerHTML = this.message;
+      if (this.monsters[index].isAlive()) {
+        if (this.isTouchable(this.monsters[index], this.hero)) {
+          this.monsters[index].fight(this.hero);
+          this.message = `${this.monsters[index].name} 💙 ${this.monsters[index].life} 🗡️ ${this.hero.name} 💙 ${this.hero.life}`;
+          document.getElementById('error').innerHTML = this.message;
+        }
+      } else {
+        this.message = ` ${this.hero.name} won 🗡️ ${this.hero.life} 💙 ${this.monsters[index].name} is dead !!!`
+        document.getElementById('error').innerHTML = this.message;
+        this.hero.updateExp(this.monsters[index].experience);
+        return true;
+      }
+    }
+  }
+
+
+  checkBattle() {
+
+    const check = this.monsters.some(monster => (monster.isAlive()));
+    if (check) {
+      this.message = ` ${this.hero.name} won 🗡️ !!!`
+      document.getElementById('error').innerHTML = this.message;
+    }
+
+    return check;
   }
 }

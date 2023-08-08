@@ -51,7 +51,6 @@ class Arena {
       this.message = "This monster is not touchable, please move first";
       document.getElementById('error').innerHTML = this.message;
     } else {
-      console.log('this.hero.strength :>> ', this.hero.strength);
       this.hero.fight(this.monsters[index]);
       this.message = `${this.hero.name} 💙 ${this.hero.life} 🗡️ ${this.monsters[index].name} 💙 ${this.monsters[index].life}`;
       document.getElementById('error').innerHTML = this.message;
